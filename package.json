@@ -1,5 +1,5 @@
 {
-  "name": "dayjs-business-days",
+  "name": "@omnix-ia/dayjs-business-days",
   "version": "1.1.0",
   "description": "Day.js plugin to add support for calculating dates only accounting for Business days",
   "main": "index.min.js",
@@ -12,10 +12,7 @@
     "lint": "npx eslint .",
     "lint:report": "npx eslint --output-file eslint_report.json --format json ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/soar-tech/dayjs-business-days.git"
-  },
+  "repository": "git://github.com/omnix-ia/dayjs-business-days",
   "keywords": [
     "day.js",
     "business",
@@ -49,5 +46,8 @@
   },
   "dependencies": {
     "ajv": "^8.11.0"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
   }
 }
