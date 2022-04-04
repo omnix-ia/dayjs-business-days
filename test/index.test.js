@@ -71,7 +71,7 @@ it('Should return a two dimensional array of businessWeeks in a given month', ()
   expect(dayjs('2019-12-15').businessWeeksInMonth()[1][4].valueOf()).toBe(dayjs('2019-12-13').valueOf());
 });
 
-it.only('Should not be a business day on holidays', () => {
+it('Should not be a business day on holidays', () => {
   const july4th = '07/04';
   const laborDay = '09/07';
 
