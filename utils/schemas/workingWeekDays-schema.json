@@ -1,0 +1,10 @@
+{
+  "type": "array",
+  "items": {
+    "type": "integer",
+    "minimum": 1,
+    "maximum": 7
+  },
+  "maxItems": 6,
+  "minItems": 1
+}

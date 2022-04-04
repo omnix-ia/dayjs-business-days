@@ -1,4 +1,20 @@
-export default (option = {}, dayjsClass) => {
+const Utils = require('./../utils/Utils');
+
+export default (option = {}, dayjsClass, dayjsFactory) => {
+  if (option.workingWeekdays) {
+    Utils.validateWorkingWeekDays(option.workingWeekdays);
+  }
+
+  dayjsFactory.setWorkingWeekdays = function (workingWeekdays) {
+    Utils.validateWorkingWeekDays(workingWeekdays);
+    option.workingWeekdays = workingWeekdays;
+  };
+
+  dayjsFactory.setHolidays = function (holidays, format) {
+    option.holidays = holidays;
+    option.holidayFormat = format;
+  };
+
   dayjsClass.prototype.isHoliday = function () {
     if (!option.holidays) return false;
     if (option.holidays.includes(this.format(option.holidayFormat))) return true;
@@ -7,8 +23,12 @@ export default (option = {}, dayjsClass) => {
   };
 
   dayjsClass.prototype.isBusinessDay = function () {
-    const workingWeekdays = [1, 2, 3, 4, 5];
-
+    let workingWeekdays;
+    if (Array.isArray(option.workingWeekdays) && option.workingWeekdays.length > 0) {
+      workingWeekdays = option.workingWeekdays;
+    } else {
+      workingWeekdays = [1, 2, 3, 4, 5];
+    }
     if (this.isHoliday()) return false;
     if (workingWeekdays.includes(this.day())) return true;
 

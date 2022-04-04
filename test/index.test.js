@@ -72,15 +72,15 @@ it('Should return a two dimensional array of businessWeeks in a given month', ()
 });
 
 it('Should not be a business day on holidays', () => {
-  const july4th = '2020-07-04';
-  const laborDay = '2020-09-07';
+  const july4th = '07/04';
+  const laborDay = '09/07';
 
   const options = {
     holidays: [july4th, laborDay],
-    holidayFormat: 'YYYY-MM-DD',
+    holidayFormat: 'MM/DD',
   };
-
-  dayjs.extend(businessDays, options);
+  dayjs.setHolidays(options.holidays, options.holidayFormat);
+  dayjs.setWorkingWeekdays([1, 2, 3, 4, 5]);
   expect(dayjs('2020-07-04T00:00:00.000').isBusinessDay()).toBe(false);
   expect(dayjs('2020-09-07T00:00:00.000').isBusinessDay()).toBe(false);
   expect(dayjs('2020-07-04T00:00:00.000').isHoliday()).toBe(true);

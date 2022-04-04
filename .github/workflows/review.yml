@@ -1,0 +1,67 @@
+name: Omnix dayjs business days
+
+on:
+    pull_request:
+      branches:
+        - develop
+        - master
+
+env:
+  GHA_TOKEN: ${{secrets.GHA_TOKEN}}
+
+jobs:
+  ReviewAndTest:
+    name: Review and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      
+      - name: Setup Node.js 
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.17.6
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@omnix-ia'
+
+      - name: Auth with Github Registry 
+        run: |
+          echo -e "@omnix-ia:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=\${GHA_TOKEN}\nalways-auth=true" > .npmrc
+      
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Code Review
+        run: npm run lint:report
+        continue-on-error: true
+      
+      - name: Upload Review Report
+        uses: actions/upload-artifact@v1
+        with:
+          name: eslint_report.json
+          path: eslint_report.json
+
+      - name: Generate PR Annotations
+        uses: reviewdog/action-eslint@v1
+        with:
+          fail_on_error: true
+          reporter: github-pr-review
+          eslint_flags: './'
+
+      - name: Run Tests
+        run: npm test
