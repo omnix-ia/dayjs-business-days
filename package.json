@@ -1,6 +1,6 @@
 {
   "name": "@omnix-ia/dayjs-business-days",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Day.js plugin to add support for calculating dates only accounting for Business days",
   "main": "index.min.js",
   "module": "index.min.js",
@@ -34,7 +34,7 @@
     "@babel/preset-env": "^7.9.5",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.3.0",
-    "dayjs": "^1.8.24",
+    "dayjs": "^1.11.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-import": "^2.20.2",
@@ -48,6 +48,6 @@
     "ajv": "^8.11.0"
   },
   "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com"
   }
 }

@@ -1,12 +1,5 @@
-const Utils = require('./../utils/Utils');
-
 export default (option = {}, dayjsClass, dayjsFactory) => {
-  if (option.workingWeekdays) {
-    Utils.validateWorkingWeekDays(option.workingWeekdays);
-  }
-
   dayjsFactory.setWorkingWeekdays = function (workingWeekdays) {
-    Utils.validateWorkingWeekDays(workingWeekdays);
     option.workingWeekdays = workingWeekdays;
   };
 
