@@ -1,12 +1,17 @@
 export default (option = {}, dayjsClass, dayjsFactory) => {
+  const defaultWorkingWeekdays = [1, 2, 3, 4, 5];
+
   dayjsFactory.setWorkingWeekdays = function (workingWeekdays) {
     option.workingWeekdays = workingWeekdays;
   };
 
-  dayjsFactory.setHolidays = function (holidays, format) {
+  dayjsFactory.setHolidays = function (holidays, format = 'MM/DD') {
     option.holidays = holidays;
     option.holidayFormat = format;
   };
+
+  dayjsClass.prototype.setWorkingWeekdays = dayjsFactory.setWorkingWeekdays;
+  dayjsClass.prototype.setHolidays = dayjsFactory.setHolidays;
 
   dayjsClass.prototype.isHoliday = function () {
     if (!option.holidays) return false;
@@ -16,14 +21,9 @@ export default (option = {}, dayjsClass, dayjsFactory) => {
   };
 
   dayjsClass.prototype.isBusinessDay = function () {
-    let workingWeekdays;
-    if (Array.isArray(option.workingWeekdays) && option.workingWeekdays.length > 0) {
-      workingWeekdays = option.workingWeekdays;
-    } else {
-      workingWeekdays = [1, 2, 3, 4, 5];
-    }
+    let workingWeekdays = option.workingWeekdays || defaultWorkingWeekdays;
     if (this.isHoliday()) return false;
-    if (workingWeekdays.includes(this.day())) return true;
+    if (workingWeekdays.includes(this.isoWeekday())) return true;
 
     return false;
   };

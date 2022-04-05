@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
 import businessDays from '../src';
 
 dayjs.extend(businessDays);
+dayjs.extend(isoWeek);
 
 it('Should only be a business day Monday to Friday', () => {
   expect(dayjs().startOf('week').isBusinessDay()).toBe(false);
