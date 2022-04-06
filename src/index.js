@@ -91,7 +91,15 @@ export default (option, dayjsClass, dayjsFactory) => {
 
     const isPositiveDiff = day1 >= day2;
     let start = isPositiveDiff ? day2 : day1;
-    const end = isPositiveDiff ? day1 : day2;
+    let end = isPositiveDiff ? day1 : day2;
+
+    start = start.set('hours', 0);
+    start = start.set('minutes', 0);
+    start = start.set('seconds', 0);
+
+    end = end.set('hours', 0);
+    end = end.set('minutes', 0);
+    end = end.set('seconds', 0);
 
     let daysBetween = 0;
 
