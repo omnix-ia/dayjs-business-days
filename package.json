@@ -1,6 +1,6 @@
 {
   "name": "@omnix-ia/dayjs-business-days",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Day.js plugin to add support for calculating dates only accounting for Business days",
   "main": "index.min.js",
   "module": "index.min.js",

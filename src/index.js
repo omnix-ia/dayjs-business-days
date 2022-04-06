@@ -1,5 +1,7 @@
-export default (option = {}, dayjsClass, dayjsFactory) => {
-  const defaultWorkingWeekdays = [1, 2, 3, 4, 5];
+export default (option, dayjsClass, dayjsFactory) => {
+  option = option || {};
+
+  const defaultWorkingWeekdays = [1, 2, 3, 4, 5, 6, 7];
 
   dayjsFactory.setWorkingWeekdays = function (workingWeekdays) {
     option.workingWeekdays = workingWeekdays;
@@ -10,20 +12,32 @@ export default (option = {}, dayjsClass, dayjsFactory) => {
     option.holidayFormat = format;
   };
 
-  dayjsClass.prototype.setWorkingWeekdays = dayjsFactory.setWorkingWeekdays;
-  dayjsClass.prototype.setHolidays = dayjsFactory.setHolidays;
+  dayjsClass.prototype.setWorkingWeekdays = function (workingWeekdays) {
+    dayjsFactory.setWorkingWeekdays.bind(this)(workingWeekdays);
+  };
+
+  dayjsClass.prototype.setHolidays = function (holidays, format) {
+    dayjsFactory.setHolidays.bind(this)(holidays, format);
+  };
 
   dayjsClass.prototype.isHoliday = function () {
-    if (!option.holidays) return false;
-    if (option.holidays.includes(this.format(option.holidayFormat))) return true;
-
+    if (!option.holidays) {
+      return false;
+    }
+    if (option.holidays.includes(this.format(option.holidayFormat))) {
+      return true;
+    }
     return false;
   };
 
   dayjsClass.prototype.isBusinessDay = function () {
-    let workingWeekdays = option.workingWeekdays || defaultWorkingWeekdays;
-    if (this.isHoliday()) return false;
-    if (workingWeekdays.includes(this.isoWeekday())) return true;
+    const workingWeekdays = option.workingWeekdays || defaultWorkingWeekdays;
+    if (this.isHoliday()) {
+      return false;
+    }
+    if (workingWeekdays.includes(this.isoWeekday())) {
+      return true;
+    }
 
     return false;
   };
@@ -32,11 +46,11 @@ export default (option = {}, dayjsClass, dayjsFactory) => {
     const numericDirection = number < 0 ? -1 : 1;
     let currentDay = this.clone();
     let daysRemaining = Math.abs(number);
-
     while (daysRemaining > 0) {
       currentDay = currentDay.add(numericDirection, 'd');
-
-      if (currentDay.isBusinessDay()) daysRemaining -= 1;
+      if (currentDay.isBusinessDay()) {
+        daysRemaining -= 1;
+      }
     }
 
     return currentDay;
@@ -69,6 +83,31 @@ export default (option = {}, dayjsClass, dayjsFactory) => {
     }
 
     return isPositiveDiff ? daysBetween : -daysBetween;
+  };
+
+  dayjsFactory.nonWorkingWeekDaysDiff = function (input) {
+    const day1 = this.clone();
+    const day2 = input.clone();
+
+    const isPositiveDiff = day1 >= day2;
+    let start = isPositiveDiff ? day2 : day1;
+    const end = isPositiveDiff ? day1 : day2;
+
+    let daysBetween = 0;
+
+    if (start.isSame(end)) return daysBetween;
+
+    while (start < end) {
+      if (!start.isBusinessDay()) daysBetween += 1;
+
+      start = start.add(1, 'd');
+    }
+
+    return isPositiveDiff ? daysBetween : -daysBetween;
+  };
+
+  dayjsClass.prototype.nonWorkingWeekDaysDiff = function (input) {
+    return dayjsFactory.nonWorkingWeekDaysDiff.bind(this)(input);
   };
 
   dayjsClass.prototype.nextBusinessDay = function () {
